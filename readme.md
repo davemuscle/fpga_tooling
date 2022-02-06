@@ -1,7 +1,8 @@
 # fpga_tooling
 ## Install
 Required:
-- Add fpga_tooling/bin to yourPATH
+- Add fpga_tooling/bin to your PATH
+
 Optional:
 - Add an alias for 'lint.sh' to 'lint'
 
