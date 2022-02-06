@@ -77,5 +77,5 @@ class ModelsimTestbench:
         os.system(cmd)
 
     def clean(self):
-        cmd = "rm -rf work/* transcript *.vcd *.vcd.fst"
+        cmd = "rm -rf work transcript *.vcd *.vcd.fst"
         os.system(cmd)
