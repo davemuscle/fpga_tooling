@@ -14,6 +14,8 @@ class SubplotMaker:
     ydata = []
     xlabels = []
     ylabels = []
+    xtypes=[]
+    ytypes=[]
     stitles = []
 
     def __init__(self, file):
@@ -37,6 +39,8 @@ class SubplotMaker:
         self.xlabels = [""]*num_plots
         self.ylabels = [""]*num_plots
         self.stitles = [""]*num_plots
+        self.xtypes  = [float]*num_plots
+        self.ytypes  = [float]*num_plots
         for i in range(num_plots):
             line = self.data[i+1].strip()
             if(line):
@@ -46,21 +50,24 @@ class SubplotMaker:
                         self.xlabels[i] = item.split('=')[1].strip()
                     if "ylabel" in item:
                         self.ylabels[i] = item.split('=')[1].strip()
+                    if "xtype" in item:
+                        self.xtypes[i] = locate(item.split('=')[1].strip())
+                    if "ytype" in item:
+                        self.ytypes[i] = locate(item.split('=')[1].strip())
                     if "title" in item:
                         self.stitles[i] = item.split('=')[1].strip()
 
     def get_raw(self):
         self.xdata = [[] for _ in range(self.rows*self.cols)]
         self.ydata = [[] for _ in range(self.rows*self.cols)]
-
         idx = 1 + self.rows * self.cols
         for i in range(idx, len(self.data)):
             plot_num = 0
             line = self.data[i].strip()
             for plot_data in line.split("::"):
                 num = plot_data.split(',')
-                self.xdata[plot_num].append(num[0])
-                self.ydata[plot_num].append(num[1])
+                self.xdata[plot_num].append(self.xtypes[plot_num](num[0]))
+                self.ydata[plot_num].append(self.ytypes[plot_num](num[1]))
                 plot_num = plot_num + 1
 
     def debug(self):
@@ -85,7 +92,7 @@ class SubplotMaker:
             xlabel(self.xlabels[i])
             ylabel(self.ylabels[i])
         suptitle(self.figtitle)
-        #tight_layout()
+        tight_layout()
         show()
 
 if __name__ == '__main__':
