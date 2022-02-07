@@ -5,8 +5,8 @@ sim_list = file1.sv file2.sv
 sim_tb = tb
 sim_params = CLK=500, FEATURE=true
 
-.PHONY: modelsim
-modelsim:
+.PHONY: sim
+sim:
 	vlog $(sim_list)
 	vsim -c $(addprefix -g, $(sim_params)) -do "run -all" $(sim_tb)
 
