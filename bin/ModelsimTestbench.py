@@ -21,7 +21,8 @@ Usage:
 """
 
 import os # for system call
-   
+import argparse # for command-line usage
+
 class ModelsimTestbench:
 
     entity = ""
@@ -65,7 +66,8 @@ class ModelsimTestbench:
         for source in self.sources:
             cmd = cmd + " " + source
         print(cmd)
-        os.system(cmd)
+        if(os.system(cmd) != 0):
+            raise Exception('Modelsim compilation failed!')
 
     # run vsim
     def run(self):
@@ -74,8 +76,32 @@ class ModelsimTestbench:
         for define in self.defines:
             cmd = cmd + " -G" + define + "=" + self.defines[define]
         print(cmd)
-        os.system(cmd)
+        if(os.system(cmd) != 0):
+            raise Exception('Modelsim elaboration failed!')
 
+    # clean up directory
     def clean(self):
         cmd = "rm -rf work transcript *.vcd *.vcd.fst"
-        os.system(cmd)
+        if(os.system(cmd) != 0):
+            raise Exception('Modelsim clean failed!')
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Helper class for Modelsim simulation')
+    parser.add_argument('--cmd', metavar='file.txt', required=True, nargs=1, type=str, help = 'simulation directive text file')
+    parser.add_argument('--clean', action='store_const', const=1, help='clean directory')
+    parser.add_argument('--print_parse', action='store_const', const=1, help='print post-parsed data')
+    parser.add_argument('--compile', action='store_const', const=1, help='compile simulation')
+    parser.add_argument('--run', action='store_const', const=1, help='elaborate simulation, compilation must have been run')
+    parser.add_argument('--all', action='store_const', const=1, help='run all of the above')
+
+    args = parser.parse_args()
+    tb = ModelsimTestbench()
+    if(args.clean or args.all):
+        tb.clean()
+    tb.parse(args.cmd[0])
+    if(args.print_parse or args.all):
+        tb.print_parsed()
+    if(args.compile or args.all):
+        tb.compile()
+    if(args.run or args.all):
+        tb.run()
