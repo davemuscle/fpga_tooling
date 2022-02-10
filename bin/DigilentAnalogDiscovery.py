@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 # Dave Muscle
+# from the command line, eg: make sim sim_list=xyz
 
 """
   Helper for running Digilent's Analog Discovery via Python
