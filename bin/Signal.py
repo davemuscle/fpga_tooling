@@ -79,12 +79,15 @@ def set_frequency_to_dft_bin(frequency=440.0, samplerate=48000, dft_size=256):
 
 # Get signal-to-noise ratio via DFT magnitudes
 # Might be a good idea to cut out the DC bin before calling
-def get_snr(mags=[]):
+def get_snr(mags=[], forgiveness=4):
+    mags_copy = [i for i in mags]
     idx =  mags.index(max(mags))
     top = mags[idx]
-    mags[idx] = 0
-    low = get_rms(mags)
-    mags[idx] = top
+    mags_copy[idx] = 0
+    for i in range(1,int((forgiveness/2)+1)):
+        mags_copy[idx+i] = 0
+        mags_copy[idx-i] = 0
+    low = get_rms(mags_copy)
     return 20*np.log10(top/low)
 
 # Get THD+N
@@ -105,3 +108,31 @@ def get_thdn(mags=[], targetfreq = 440.0, dft_size = 1024, samplerate=44800):
         curr_freq = targetfreq * harmonic
     noise = get_rms(mags_copy)
     return (sum_harmonics + noise)/fundamental
+
+def apply_hann_window(samples, alpha):
+    i = 0
+    w = []
+    for sample in samples:
+        v = np.cos(2*np.pi*float(i)/float(len(samples)))
+        v = 1 -v
+        i = i + 1
+        v = v * alpha
+        w.append(v * sample)
+    return w
+
+def apply_tukey_window(samples, alpha):
+    w = [0]*len(samples)
+    lower_lim = int(alpha*len(samples)/2)
+    for n in range(lower_lim):
+        w[n] = 0.5*(1 - np.cos(2.0*np.pi*n/(alpha*len(samples))))
+    for n in range(lower_lim,int(len(samples)/2)):
+        w[n] = 1
+    for n in range(int(len(samples)/2), len(samples)):
+        w[n] = w[len(samples)-n-1]
+    for n in range(len(samples)):
+        w[n] = w[n] * samples[n]
+    return w
+
+def remove_dc(samples):
+    dc = get_dc(samples)
+    return [x-dc for x in samples]
