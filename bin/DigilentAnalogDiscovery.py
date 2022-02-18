@@ -9,6 +9,7 @@
 """
 
 import sys
+from time import sleep
 sys.path.append("/usr/share/digilent/waveforms/samples/py")
 
 from ctypes import *
@@ -70,3 +71,29 @@ class DigilentAnalogDiscovery:
         self.dwf.FDwfAnalogOutNodeAmplitudeSet(self.hdwf, channel, AnalogOutNodeCarrier, c_double(amp))
         self.dwf.FDwfAnalogOutNodeOffsetSet   (self.hdwf, channel, AnalogOutNodeCarrier, c_double(offset))
         self.dwf.FDwfAnalogOutConfigure       (self.hdwf, channel, c_bool(True))
+
+    def scope_config_read_buffer(self, buffer=4096, channel=0, samplerate=20000000.0, range=5.0):
+        sts = c_byte()
+        samples = (c_double*buffer)()
+        self.dwf.FDwfAnalogInFrequencySet(self.hdwf, c_double(samplerate))
+        self.dwf.FDwfAnalogInBufferSizeSet(self.hdwf, c_int(buffer)) 
+        self.dwf.FDwfAnalogInChannelEnableSet(self.hdwf, c_int(-1), c_bool(True))
+        self.dwf.FDwfAnalogInChannelRangeSet(self.hdwf, c_int(-1), c_double(range))
+        self.dwf.FDwfAnalogInChannelFilterSet(self.hdwf, c_int(-1), filterDecimate)
+        
+        sleep(2)
+        self.dwf.FDwfAnalogInConfigure(self.hdwf, c_int(1), c_int(1))
+        
+        while True:
+            self.dwf.FDwfAnalogInStatus(self.hdwf, c_int(1), byref(sts))
+            if sts.value == DwfStateDone.value :
+                break
+            sleep(0.1)
+        
+        if(channel == 0):
+            self.dwf.FDwfAnalogInStatusData(self.hdwf, 0, samples, buffer) # get channel 1 data
+            self.dwf.FDwfDeviceCloseAll()
+        elif(channel == 1):
+            self.dwf.FDwfAnalogInStatusData(self.hdwf, 1, samples, buffer) # get channel 2 data
+            self.dwf.FDwfDeviceCloseAll()
+        return samples
