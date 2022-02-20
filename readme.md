@@ -1,6 +1,7 @@
 # fpga_tooling
 ## Install
 Required:
+- Install Digilent Analog Discovery API (todo: add instructions)
 - Add fpga_tooling/bin to your PATH
 - Add fpga_tooling/bin to your PYTHONPATH
 
