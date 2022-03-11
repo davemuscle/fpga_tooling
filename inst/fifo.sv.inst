@@ -3,19 +3,19 @@ fifo #(
     .DEPTH(8),
     .WIDTH(4)
 ) inst (
-    .wr_clk   ()
-    .rd_clk   ()
-    .rst      ()
+    .wr_clk   (),
+    .rd_clk   (),
+    .rst      (),
 
-    .wr_valid ()
-    .wr_data  ()
+    .wr_valid (),
+    .wr_data  (),
 
-    .rd_valid ()
-    .rd_data  ()
-    .rd_ready ()
+    .rd_valid (),
+    .rd_data  (),
+    .rd_ready (),
 
-    .full     ()
-    .empty    ()
-    .overflow ()
+    .full     (),
+    .empty    (),
+    .overflow (),
     .underflow()
 );
