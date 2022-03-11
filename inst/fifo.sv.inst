@@ -1,0 +1,21 @@
+fifo #(
+    .FMODE("SYNC"),
+    .DEPTH(8),
+    .WIDTH(4)
+) inst (
+    .wr_clk   ()
+    .rd_clk   ()
+    .rst      ()
+
+    .wr_valid ()
+    .wr_data  ()
+
+    .rd_valid ()
+    .rd_data  ()
+    .rd_ready ()
+
+    .full     ()
+    .empty    ()
+    .overflow ()
+    .underflow()
+);

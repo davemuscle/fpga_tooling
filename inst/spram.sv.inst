@@ -1,0 +1,13 @@
+spram #(
+    .DEPTH(256),
+    .WIDTH(32)
+) inst (
+    .clk     ()
+    .wr_valid()
+    .wr_addr ()
+    .wr_data ()
+    .rd_valid()
+    .rd_ready()
+    .rd_data ()
+    .rd_addr ()
+);

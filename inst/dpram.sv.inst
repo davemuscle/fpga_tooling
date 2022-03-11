@@ -1,0 +1,22 @@
+dpram #(
+    .DEPTH(256),
+    .WIDTH(32)
+) inst (
+    .a_clk     ()
+    .a_wr_valid()
+    .a_wr_addr ()
+    .a_wr_data ()
+    .a_rd_valid()
+    .a_rd_ready()
+    .a_rd_data ()
+    .a_rd_addr ()
+
+    .b_clk     ()
+    .b_wr_valid()
+    .b_wr_addr ()
+    .b_wr_data ()
+    .b_rd_valid()
+    .b_rd_ready()
+    .b_rd_data ()
+    .b_rd_addr ()
+);
